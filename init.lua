@@ -56,6 +56,9 @@ vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
+-- Set tab size
+vim.opt.tabstop = 4
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -71,6 +74,7 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.opt.guifont = 'MesloLGS NF:h14'
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -146,6 +150,13 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'rafi/awesome-vim-colorschemes', -- Collection of awesome color schemes for Vim, merged for quick use
   'github/copilot.vim', -- GitHub Copilot
+  'ThePrimeagen/vim-be-good', -- Vim Be Good: A Vim Training Game by ThePrimeagen
+
+  {
+    'm4xshen/hardtime.nvim', -- Slow down your typing to help you learn Vim
+    dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
+    opts = {},
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
