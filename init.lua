@@ -28,6 +28,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.guifont = 'MesloLGS NF:h14'
+vim.opt.termguicolors = true
 
 -- [[ Basic Keymaps ]]
 
@@ -100,6 +101,41 @@ require('lazy').setup({
     'm4xshen/hardtime.nvim', -- Slow down your typing to help you learn Vim
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
     opts = {},
+  },
+
+  {
+    'mbbill/undotree', -- Visualize your undo tree
+    config = function()
+      vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { desc = 'Toggle [U]ndo tree' })
+    end,
+  },
+
+  {
+    'ThePrimeagen/harpoon', -- A navigation and bookmarking plugin for Neovim
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+      harpoon:setup()
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():add()
+      end, { desc = 'Harpoon [A]dd' })
+      vim.keymap.set('n', '<leader>H', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = '[H]arpoon' })
+      vim.keymap.set('n', '<C-h>', function()
+        harpoon:list():select(1)
+      end, { desc = 'Harpoon select 1' })
+      vim.keymap.set('n', '<C-j>', function()
+        harpoon:list():select(2)
+      end, { desc = 'Harpoon select 2' })
+      vim.keymap.set('n', '<C-k>', function()
+        harpoon:list():select(3)
+      end, { desc = 'Harpoon select 3' })
+      vim.keymap.set('n', '<C-l>', function()
+        harpoon:list():select(4)
+      end, { desc = 'Harpoon select 4' })
+    end,
   },
 
   {
