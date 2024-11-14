@@ -57,6 +57,12 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Keybinds to save
 vim.keymap.set('n', 'Z<CR>', '<cmd>update<CR>', { desc = 'Save file' })
 
+-- Copy current file path to clipboard and show a message
+vim.keymap.set('n', '<leader>cp', function()
+  vim.fn.setreg('+', vim.fn.expand '%:p')
+  vim.notify 'File path copied to clipboard'
+end, { desc = 'Copy [P]ath to clipboard' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -94,6 +100,24 @@ require('lazy').setup({
     'm4xshen/hardtime.nvim', -- Slow down your typing to help you learn Vim
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
     opts = {},
+  },
+
+  {
+    'f-person/git-blame.nvim',
+    -- load the plugin at startup
+    event = 'VeryLazy',
+    -- Because of the keys part, you will be lazy loading this plugin.
+    -- The plugin wil only load once one of the keys is used.
+    -- If you want to load the plugin at startup, add something like event = 'VeryLazy',
+    -- or lazy = false. One of both options will work.
+    opts = {
+      -- your configuration comes here
+      -- for example
+      enabled = true, -- if you want to enable the plugin
+      message_template = ' <summary> • <date> • <author> • <<sha>>', -- template for the blame message, check the Message template section for more options
+      date_format = '%m-%d-%Y %H:%M:%S', -- template for the date, check Date format section for more options
+      virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+    },
   },
 
   -- NOTE: Plugins can also be added by using a table,
