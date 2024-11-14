@@ -64,6 +64,8 @@ vim.keymap.set('n', '<leader>cp', function()
   vim.notify 'File path copied to clipboard'
 end, { desc = 'Copy [P]ath to clipboard' })
 
+vim.keymap.set('n', '<leader>ob', '<cmd>!open -a "Google Chrome" "%"<cr>', { desc = '[O]pen the current file in [B]rowser' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
