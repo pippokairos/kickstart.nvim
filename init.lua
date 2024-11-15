@@ -99,6 +99,13 @@ require('lazy').setup({
   'github/copilot.vim', -- GitHub Copilot
   'ThePrimeagen/vim-be-good', -- Vim Be Good: A Vim Training Game by ThePrimeagen
 
+  { 'tpope/vim-endwise', ft = { 'ruby', 'eruby' } },
+
+  {
+    'numToStr/Comment.nvim',
+    opts = {},
+  },
+
   {
     'm4xshen/hardtime.nvim', -- Slow down your typing to help you learn Vim
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
@@ -119,12 +126,51 @@ require('lazy').setup({
     config = function()
       local harpoon = require 'harpoon'
       harpoon:setup()
+
+      -- basic telescope configuration
+      local conf = require('telescope.config').values
+      local function toggle_telescope(harpoon_files)
+        local finder = function()
+          local paths = {}
+          for _, item in ipairs(harpoon_files.items) do
+            table.insert(paths, item.value)
+          end
+
+          return require('telescope.finders').new_table {
+            results = paths,
+          }
+        end
+
+        require('telescope.pickers')
+          .new({}, {
+            prompt_title = 'Harpoon',
+            finder = finder(),
+            previewer = conf.file_previewer {},
+            sorter = conf.generic_sorter {},
+            attach_mappings = function(prompt_buffer_number, map)
+              map('i', '<C-d>', function()
+                local action_state = require 'telescope.actions.state'
+                local selected_entry = action_state.get_selected_entry()
+                local current_picker = action_state.get_current_picker(prompt_buffer_number)
+
+                table.remove(harpoon_files.items, selected_entry.index)
+                current_picker:refresh(finder())
+              end)
+
+              return true
+            end,
+          })
+          :find()
+      end
+
+      vim.keymap.set('n', '<leader>h', function()
+        toggle_telescope(harpoon:list())
+      end, { desc = '[H]arpoon list' })
+
       vim.keymap.set('n', '<leader>a', function()
         harpoon:list():add()
       end, { desc = 'Harpoon [A]dd' })
-      vim.keymap.set('n', '<leader>H', function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end, { desc = '[H]arpoon' })
+
       vim.keymap.set('n', '<C-h>', function()
         harpoon:list():select(1)
       end, { desc = 'Harpoon select 1' })
@@ -247,7 +293,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>H', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
   },
@@ -318,6 +364,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sF', function()
+        builtin.find_files { no_ignore = true }
+      end, { desc = '[S]earch [F]iles (include gitignore)' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
